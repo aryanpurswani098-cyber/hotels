@@ -2,7 +2,8 @@ const express = require('express');
 let app = express();
 const db =require('./db');
 const bodyParser=require('body-parser');
-const task=require('./models/task');
+
+//Get Method
 
 app.use(bodyParser.json());
 app.get('/',(req,res)=>{
@@ -22,28 +23,11 @@ app.use('/menu',menuRouter);
 
 // Tasks
 
-app.post('/task',async(req,res)=>{
-    try{
-        const data=req.body;
-        const newTask = new task(data);
-        const response = await newTask.save();
-        console.log("Data saved.");
-        res.status(200).json(response);
-    }catch(err){
-        console.log(err);
-        res.status(500).json({error:'Internal Server Error.'});
-    }
-});
-app.get('/task',async (req,res)=>{
-    try{
-        const data = await task.find();
-        console.log('data sent.');
-        res.status(200).json(data);
-    }catch(err){
-        console.log(err);
-        res.status(500).json('Internal Server Error.');
-    }
-})
+const taskRouter=require('./routes/taskRoutes');
+app.use('/task',taskRouter);
+
+//Port 
+
 app.listen(3000,()=>{
     console.log("Server running on port 3000.")
 });
